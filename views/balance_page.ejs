@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/countup@1.8.2/dist/countUp.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@800&display=swap" rel="stylesheet">
+    <title>test_site</title>
+    <script>
+        $(document).ready(function(){
+            $(".comment_button").click(function() {
+                var comment_body = $(this).closest('#comment_form').children('#comment_body');
+                if(comment_body.value==""){
+                    comment_body.focus();
+                    return false;
+                }
+                var action = $(this).closest('#comment_form').attr("action");
+                $.ajax({
+                        type: "POST",
+                        url: action,
+                        data: $(this).closest('#comment_form').serialize(),
+                        success: function(response) {
+                            if(response.result == "comment_success") {
+                                location.reload();
+                            }
+                            if(response.result == "comment_fail") {
+                                location.href = '/login';
+                            }
+                        },
+                        error: function() {
+                            alert('error');
+                        }
+                });
+            });
+            $(".like_button").click(function() {
+                $.ajax({
+                          type: "POST",
+                          url: "/like",
+                          data: {comment_id:this.dataset.comment_id},
+                          success: function(response) {
+                            if(response.result == "like_insert") {
+                                $(`#sub${response.comment_id}`).children('.like_count').text(Number($(`#sub${response.comment_id}`).children('.like_count').text())+1);
+                                $(`#sub${response.comment_id}`).children('.like_button').html(`<path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z" clip-rule="evenodd"/>`);
+                            }
+                            else if(response.result == "like_delete"){
+                                $(`#sub${response.comment_id}`).children('.like_count').text(Number($(`#sub${response.comment_id}`).children('.like_count').text())-1);
+                                $(`#sub${response.comment_id}`).children('.like_button').html(`<path fill-rule="evenodd" d="M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 01.176-.17C12.72-3.042 23.333 4.867 8 15z" clip-rule="evenodd"/>`);
+                            }
+                            else if(response.result == "like_fail") {
+                                location.href = '/login';
+                            }
+                          },
+                          error: function() {
+                          }
+                });
+            });
+            $("#answer1").click(function() {
+                $.ajax({
+                        type: "POST",
+                        url: "/vote",
+                        data: {question_id: location.pathname.replace('/', ''), agree: 0},
+                        success: function(response) {
+                            if(response.result == "vote_success") {
+                                var a1_c = response.agree;
+                                var a2_c = response.disagree;
+                                var a1_per = a1_c/(a1_c+a2_c)*100;
+                                var a2_per = 100-a1_per;
+                                var a1_t = a1_per/25;
+                                var a2_t = a1_per/25;
+                                $('#answer1_text').css("top","15%");
+                                $('#answer2_text').css("top","15%");
+                                var a1_vote = new CountUp("answer1_vote",0,a1_per, 0, a1_t, {
+                                    suffix: '%'
+                                });
+                                a1_vote.start();
+                                var a1_count = new CountUp("answer1_count",0,a1_c, 0, a1_t);
+                                a1_count.start();
+                                var a2_vote = new CountUp("answer2_vote",0,a2_per, 0, a2_t, {
+                                    suffix: '%'
+                                });
+                                a2_vote.start();
+                                var a2_count = new CountUp("answer2_count",0,a2_c, 0, a2_t);
+                                a2_count.start();
+                                $(".icon_body<%= vote_session %>").addClass('icon_body0');
+                            }
+                        },
+                        error: function() {
+                        }
+                });
+            });
+            $("#answer2").click(function() {
+                $.ajax({
+                        type: "POST",
+                        url: "/vote",
+                        data: {question_id: location.pathname.replace('/', ''), agree: 1},
+                        success: function(response) {
+                            if(response.result == "vote_success") {
+                                var a1_c = response.agree;
+                                var a2_c = response.disagree;
+                                var a1_per = a1_c/(a1_c+a2_c)*100;
+                                var a2_per = 100-a1_per;
+                                var a1_t = a1_per/25;
+                                var a2_t = a1_per/25;
+                                $('#answer1_text').css("top","15%");
+                                $('#answer2_text').css("top","15%");
+                                var a1_vote = new CountUp("answer1_vote",0,a1_per, 0, a1_t, {
+                                    suffix: '%'
+                                });
+                                a1_vote.start();
+                                var a1_count = new CountUp("answer1_count",0,a1_c, 0, a1_t);
+                                a1_count.start();
+                                var a2_vote = new CountUp("answer2_vote",0,a2_per, 0, a2_t, {
+                                    suffix: '%'
+                                });
+                                a2_vote.start();
+                                var a2_count = new CountUp("answer2_count",0,a2_c, 0, a2_t);
+                                a2_count.start();
+                                $(".icon_body<%= vote_session %>").addClass('icon_body1');
+                            }
+                        },
+                        error: function() {
+                        }
+                });
+            });
+            $("#bookmark").click(function(){
+                $.ajax({
+                        type: "POST",
+                        url: "/bookmark",
+                        data: {question_id: location.pathname.replace('/', '')},
+                        success: function(response) {
+                            if(response.result == "bookmark_insert") {
+                                $("#bookmark").html(`<path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>`);
+
+                            } else if(response.result == "bookmark_delete") {
+                                $("#bookmark").html(`<path fill-rule="evenodd" d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.523-3.356c.329-.314.158-.888-.283-.95l-4.898-.696L8.465.792a.513.513 0 00-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767l-3.686 1.894.694-3.957a.565.565 0 00-.163-.505L1.71 6.745l4.052-.576a.525.525 0 00.393-.288l1.847-3.658 1.846 3.658a.525.525 0 00.393.288l4.052.575-2.906 2.77a.564.564 0 00-.163.506l.694 3.957-3.686-1.894a.503.503 0 00-.461 0z" clip-rule="evenodd"/>`);
+
+                            } else if(response.result == "bookmark_fail") {
+                                location.href = '/login';
+                            }
+
+                        },
+                        error: function() {
+                        }
+                });
+            });
+            $("#next_button").click(function(){
+                location.href = '/';
+                history.forward();
+            });
+            $("#previous_button").click(function(){
+                history.back();
+            });
+            $(".comment_door").click(function(){
+                if($(this).text()=='접기'){
+                    $(this).text('펼치기');
+                } else if($(this).text()=='펼치기'){
+                    $(this).text('접기');
+                }
+            });
+            $("#question_delete").click(function(){
+                var delete_check = confirm("정말 삭제 하시겠습니까?");
+                if(delete_check) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/question/delete",
+                        data: {question_id: location.pathname.replace('/', '')},
+                        success: function(response) {
+                            if(response.result == "question_delete_success") {
+                                location.href = '/';
+                            }
+                        },
+                        error: function() {
+                            alert('error');
+                        }
+                    });
+                }
+            });
+            $(".comment_delete").click(function(){
+                alert("dleleeeee");
+                var delete_check = confirm("정말 삭제 하시겠습니까?");
+                if(delete_check) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/comment/delete",
+                        data: {comment_id: this.dataset.comment_id},
+                        success: function(response) {
+                            if(response.result == "comment_delete_success") {
+                                location.reload();
+                            }
+                        },
+                        error: function() {
+                            alert('error');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <%- include('navbar') %>
+    <div class="grid">
+        <div id="title" class="d-flex justify-content-between">
+            <strong id="title_text" class="flex-grow-1"><%= title %></strong>
+            <% if (locals.bookmark_session == 0 || !locals.bookmark_session) { %>
+                <%- question_delete %>
+                <svg type="button" id="bookmark" class="bi bi-star"  width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.523-3.356c.329-.314.158-.888-.283-.95l-4.898-.696L8.465.792a.513.513 0 00-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767l-3.686 1.894.694-3.957a.565.565 0 00-.163-.505L1.71 6.745l4.052-.576a.525.525 0 00.393-.288l1.847-3.658 1.846 3.658a.525.525 0 00.393.288l4.052.575-2.906 2.77a.564.564 0 00-.163.506l.694 3.957-3.686-1.894a.503.503 0 00-.461 0z" clip-rule="evenodd"/>
+            </svg>
+            <% } else { %>
+                <%- question_delete %>
+                <svg type="button" id="bookmark" class="bi bi-star-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                </svg>
+            <% } %>
+        </div>
+        <% if (locals.vote_session == 0 || locals.vote_session == 1) { %>
+            <div id="answer">
+                <div id="answer1_parent" class="answer_parent">
+                    <button id="answer1" class="btn"></button>
+                    <div id="answer1_text"><%= answer1 %></div>
+                    <div id="answer1_vote"><%= answer1_vote %>%</div>
+                    <div id="answer1_count"><%= answer1_count %></div>
+                    <div id="answer1_info"><%= answer1_info %></div>
+                </div>
+                <div id="answer2_parent" class="answer_parent">
+                    <button id="answer2" class="btn"></button>
+                    <div id="answer2_text"><%= answer2 %></div>
+                    <div id="answer2_vote"><%= answer2_vote %>%</div>
+                    <div id="answer2_count"><%= answer2_count %></div>
+                    <div id="answer2_info"><%= answer2_info %></div>
+                </div>
+            </div>
+            <script>
+                $('#answer1_text').css("top","15%");
+                $('#answer2_text').css("top","15%");
+            </script>
+        <% } else { %>
+            <div id="answer">
+                <div id="answer1_parent" class="answer_parent">
+                    <button id="answer1" class="btn"></button>
+                    <div id="answer1_text"><%= answer1 %></div>
+                    <div id="answer1_vote"></div>
+                    <div id="answer1_count"></div>
+                    <div id="answer1_info"><%= answer1_info %></div>
+                </div>
+                <div id="answer2_parent" class="answer_parent">
+                    <button id="answer2" class="btn"></button>
+                    <div id="answer2_text"><%= answer2 %></div>
+                    <div id="answer2_vote"></div>
+                    <div id="answer2_count"></div>
+                    <div id="answer2_info"><%= answer2_info %></div>
+                </div>
+            </div>
+        <% } %>
+        <div id="banner" class="d-flex justify-content-between">
+            <svg id="previous_button" data-toggle="tooltip" data-placement="top" title="이전 질문" class="bi bi-box-arrow-left" style="cursor:pointer" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M4.354 11.354a.5.5 0 000-.708L1.707 8l2.647-2.646a.5.5 0 10-.708-.708l-3 3a.5.5 0 000 .708l3 3a.5.5 0 00.708 0z" clip-rule="evenodd"/>
+                <path fill-rule="evenodd" d="M11.5 8a.5.5 0 00-.5-.5H2a.5.5 0 000 1h9a.5.5 0 00.5-.5z" clip-rule="evenodd"/>
+                <path fill-rule="evenodd" d="M14 13.5a1.5 1.5 0 001.5-1.5V4A1.5 1.5 0 0014 2.5H7A1.5 1.5 0 005.5 4v1.5a.5.5 0 001 0V4a.5.5 0 01.5-.5h7a.5.5 0 01.5.5v8a.5.5 0 01-.5.5H7a.5.5 0 01-.5-.5v-1.5a.5.5 0 00-1 0V12A1.5 1.5 0 007 13.5h7z" clip-rule="evenodd"/>
+            </svg>
+            <div class="creator"><%=creator%></div>
+            <svg id="next_button" data-toggle="tooltip" data-placement="top" title="다음 질문" class="bi bi-box-arrow-right" style="cursor:pointer" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M11.646 11.354a.5.5 0 010-.708L14.293 8l-2.647-2.646a.5.5 0 01.708-.708l3 3a.5.5 0 010 .708l-3 3a.5.5 0 01-.708 0z" clip-rule="evenodd"/>
+                <path fill-rule="evenodd" d="M4.5 8a.5.5 0 01.5-.5h9a.5.5 0 010 1H5a.5.5 0 01-.5-.5z" clip-rule="evenodd"/>
+                <path fill-rule="evenodd" d="M2 13.5A1.5 1.5 0 01.5 12V4A1.5 1.5 0 012 2.5h7A1.5 1.5 0 0110.5 4v1.5a.5.5 0 01-1 0V4a.5.5 0 00-.5-.5H2a.5.5 0 00-.5.5v8a.5.5 0 00.5.5h7a.5.5 0 00.5-.5v-1.5a.5.5 0 011 0V12A1.5 1.5 0 019 13.5H2z" clip-rule="evenodd"/>
+            </svg>
+        </div>
+        <div class="comment">
+            <form id="comment_form" action="" method="post">
+                <svg class="bi bi-people-circle be-ava-comment" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path class="icon_body<%= vote_session %>" d="M13.468 12.37C12.758 11.226 11.195 10 8 10s-4.757 1.225-5.468 2.37A6.987 6.987 0 008 15a6.987 6.987 0 005.468-2.63z"/>
+                    <path class="icon_body<%= vote_session %>" fill-rule="evenodd" d="M8 9a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
+                    <path fill-rule="evenodd" d="M8 1a7 7 0 100 14A7 7 0 008 1zM0 8a8 8 0 1116 0A8 8 0 010 8z" clip-rule="evenodd"/>
+                </svg>
+                <input type="text" name="comment_body" class="comment_body form-control" id="comment_body" placeholder="댓글을 입력해주세요.">
+                <div class="text-right">
+                    <input type="button" name="submit" class="btn btn-dark comment_button" value="등록">
+                </div>
+                <input type="text" name="parent_id" value="0" style="display: none">
+            </form>
+            <% Object.values(comment).forEach(function(element){ %>
+                <%- element %> 
+            <% }); %>
+        </div>
+    </div>
+</body>
+</html>

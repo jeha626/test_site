@@ -1,0 +1,302 @@
+* {
+	font-family: 'Nanum Gothic', sans-serif;
+}
+
+
+body {
+	padding-left: calc((100% - 958px)/2);
+	padding-right: calc((100% - 958px)/2);
+}
+
+.no-drag {
+	-ms-user-select: none;
+	-moz-user-select: -moz-none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	user-select:none;
+}
+
+.grid {
+	width: 100%;
+	margin: auto;
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-auto-rows: 50px 400px 50px 0px;
+	margin: 0;
+}
+.content {
+	display: grid;
+	grid-template-rows: 80px 324px 50px 1fr;
+}
+.comment {
+	float: left;
+}
+#answer {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
+#title {
+	font-size: 24px;
+	line-height: 50px;
+}
+#title_text {
+	margin: 5px 10px 0px 10px;
+}
+#bookmark {
+	width: 40px;
+	height: 40px;
+	margin: 10px 10px 0px 0px;
+	color: #FACC2E;
+}
+#question_delete {
+	width: 40px;
+	height: 40px;
+	margin: 10px 10px 0px 0px;
+}
+.answer_parent {
+	position: relative;
+	display: grid;
+	grid-auto-rows: 2fr 1fr;
+}
+#answer1 {
+	background-color: #FA5858;
+	font-size: 32px;
+	margin: 10px 5px 10px 10px;
+	border-radius: 20px;
+}
+#answer1_text {
+	color: white;
+	font-size: 24px;
+	position: absolute;
+	top: 33%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+#answer1_vote {
+	font-size: 84px;
+	position: absolute;
+	top: 35%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+#answer1_count {
+	font-size: 24px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+#answer2 {
+	background-color: #5858FA;
+	font-size: 32px;
+	margin: 10px 10px 10px 5px;
+	border-radius: 20px;
+}
+#answer2_text {
+	color: white;
+	font-size: 24px;
+	position: absolute;
+	top: 33%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+#answer2_vote {
+	font-size: 84px;
+	position: absolute;
+	top: 35%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+#answer2_count {
+	font-size: 24px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+#answer1_info {
+	text-align: center;
+	background-color: #E6E6E6;
+	margin: 0px 5px 10px 10px;
+	padding: 10px;
+	border-radius: 20px;
+}
+#answer2_info {
+	text-align: center;
+	background-color: #E6E6E6;
+	margin: 0px 10px 10px 5px;
+	padding: 10px;
+	border-radius: 20px;
+}
+#banner {
+	margin: 0px 10px;
+	line-height: 50px;
+}
+#previous_button {
+	width: 50px;
+	height: 50px;
+}
+#next_button {
+	width: 50px;
+	height: 50px;
+}
+
+
+
+#create_answer {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-auto-rows: 2fr 1fr;
+}
+#create_title_text {
+	height: 40px;
+	margin: 10px 10px 0px 10px;
+}
+#create_bookmark {
+	width: 40px;
+	height: 40px;
+	margin: 10px 10px 0px 0px;
+}
+#create_answer1 {
+	font-size: 32px;
+	margin: 10px 5px 10px 10px;
+	resize: none;
+}
+#create_answer2 {
+	font-size: 32px;
+	margin: 10px 10px 10px 5px;
+	resize: none;
+}
+#create_answer1_info {
+	background-color: #E6E6E6;
+	margin: 0px 5px 10px 10px;
+	resize: none;
+}
+#create_answer2_info {
+	background-color: #E6E6E6;
+	margin: 0px 10px 10px 5px;
+	resize: none;
+}
+#create_previous_button {
+	width: 50px;
+	height: 50px;
+}
+#create_next_button {
+	width: 50px;
+	height: 50px;
+}
+#create_button {
+	margin: 0px 10px;
+}
+
+
+
+
+.comment_body.form-control {
+	margin: 10px 10px 10px 60px;
+	resize: vertical;
+	width: calc(100% - 70px);
+}
+
+.submit {
+	margin-right: 10px;
+}
+
+.be-comment-name {
+	font-size: 14px;
+    margin-bottom: 1px;
+}
+
+.be-ava-comment {
+    width: 40px;
+    height: 40px;
+    float: left;
+    margin-left: 10px
+}
+
+.icon_body0 {
+	color: #FA5858;
+}
+
+.icon_body1 {
+	color: #5858FA;
+}
+
+.like_button {
+	color: red;
+}
+
+.comment_delete {
+	transform: translate(10px, 4px);
+}
+
+.be-comment-content {
+    line-height: 20px;
+    display: block;
+    background: #E6E6E6;
+    padding: 5px 20px;
+    border-radius: 10px;
+    margin: 10px 10px 0px 60px;
+}
+
+.be-comment-text {
+    font-size: 16px;
+    margin: 0px;
+    margin-top: 1px;
+}
+.sub{
+	color: #6E6E6E;
+	margin-left: 70px;
+}
+.sub strong{
+	margin-right: 10px;
+	font-size: 16px;
+}
+.comment-child{
+	margin-left: 60px;
+}
+
+.collapsing {
+    -webkit-transition: none;
+    transition: none;
+    display: none;
+}
+
+.comment_button {
+	margin-right: 10px;
+}
+
+
+
+#register_form {
+	margin: 50px 200px 0px 200px;
+}
+
+
+
+
+#login_form {
+	margin: 50px 200px 0px 200px;
+}
+
+
+
+
+#membership_grid {
+	display: grid;
+	grid-template-columns: 1fr 4fr;
+}
+
+#membership_tab {
+	margin: 10px 5px 10px 10px;
+}
+
+#membership_content {
+	margin: 10px 10px 10px 5px;
+}
+
+#up_button {
+	position: fixed;
+	bottom: 10px;
+	left: 20px;
+}
